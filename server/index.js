@@ -1,3 +1,4 @@
+
 import express from 'express';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
@@ -6,6 +7,12 @@ dotenv.config();
 const app = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3001;
+
+// Health check endpoint for debugging
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'Backend is running', time: new Date().toISOString() });
+});
+
 
 // Middleware
 // Open CORS: allow all origins
@@ -323,6 +330,15 @@ app.get('/api/health', (req, res) => {
     message: 'Portfolio Analytics API is running',
     timestamp: new Date().toISOString()
   });
+});
+
+// Catch-all error handler to always send CORS headers (should be last)
+app.use((err, req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  console.error('Unhandled error:', err);
+  res.status(500).json({ success: false, error: 'Internal server error', details: err.message });
 });
 
 app.listen(PORT, () => {

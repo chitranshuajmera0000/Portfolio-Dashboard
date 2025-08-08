@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Portfolio {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  totalValue  Decimal  @default(0)
+  currency    String   @default("USD")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  holdings    Holding[]
+  
+  @@map("portfolios")
+}
+
+model Holding {
+  id           String    @id @default(cuid())
+  portfolioId  String
+  symbol       String
+  name         String
+  quantity     Decimal
+  avgCost      Decimal
+  currentPrice Decimal
+  marketValue  Decimal
+  gainLoss     Decimal
+  gainLossPerc Decimal
+  sector       String?
+  assetType    String    @default("stock")
+  lastUpdated  DateTime  @default(now())
+  
+  portfolio    Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  priceHistory PriceHistory[]
+  
+  @@map("holdings")
+}
+
+model PriceHistory {
+  id        String   @id @default(cuid())
+  holdingId String
+  price     Decimal
+  date      DateTime @default(now())
+  
+  holding   Holding  @relation(fields: [holdingId], references: [id], onDelete: Cascade)
+  
+  @@map("price_history")
+}
+
+model MarketData {
+  id           String   @id @default(cuid())
+  symbol       String   @unique
+  name         String
+  price        Decimal
+  change       Decimal  @default(0)
+  changePerc   Decimal  @default(0)
+  volume       BigInt   @default(0)
+  marketCap    Decimal?
+  sector       String?
+  lastUpdated  DateTime @default(now())
+  
+  @@map("market_data")
+}

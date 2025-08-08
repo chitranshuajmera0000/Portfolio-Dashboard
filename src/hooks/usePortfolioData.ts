@@ -83,6 +83,7 @@ export function usePortfolioData(portfolioId: string) {
       setPortfolios(data);
     } catch (err) {
       setError('Failed to fetch portfolios');
+      setLoading(false);
     }
   }, [fetchData]);
 

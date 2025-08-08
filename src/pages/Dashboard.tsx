@@ -115,7 +115,7 @@ export function Dashboard() {
       </div>
 
       {/* Loader overlay for dashboard content */}
-      {loading && portfolios.length > 0 && (
+      {loading && portfolios.length > 0 && !error && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70 z-10">
           <RefreshCw className="h-10 w-10 animate-spin text-blue-600" />
           <span className="ml-3 text-lg text-gray-700">Loading portfolio details...</span>

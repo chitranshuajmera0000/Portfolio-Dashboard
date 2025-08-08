@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3001/api';
 
@@ -63,13 +65,11 @@ export function usePortfolioData(portfolioId: string) {
 
   const fetchData = useCallback(async (endpoint: string) => {
     try {
-      const response = await fetch(`${API_BASE}${endpoint}`);
-      const data = await response.json();
-      
+      const response = await axios.get(`${API_BASE}${endpoint}`);
+      const data = response.data;
       if (!data.success) {
         throw new Error(data.error || 'API request failed');
       }
-      
       return data.data;
     } catch (err) {
       console.error(`Error fetching ${endpoint}:`, err);
@@ -121,19 +121,11 @@ export function usePortfolioData(portfolioId: string) {
 
   const createSampleData = useCallback(async () => {
     try {
-      const response = await fetch(`${API_BASE}/seed-data`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      const data = await response.json();
-      
+      const response = await axios.post(`${API_BASE}/seed-data`);
+      const data = response.data;
       if (!data.success) {
         throw new Error(data.error || 'Failed to create sample data');
       }
-      
       return data;
     } catch (err) {
       console.error('Error creating sample data:', err);

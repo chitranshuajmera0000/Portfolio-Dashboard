@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { PortfolioOverview } from '../components/PortfolioOverview';
 import { HoldingsTable } from '../components/HoldingsTable';
 import { AllocationChart } from '../components/AllocationChart';
